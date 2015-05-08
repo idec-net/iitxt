@@ -77,6 +77,9 @@ def newmsg():
         
 ii.check_base()
 ii.load_config()
+print ("Fetching start.")
 fetch_mail()
+print ("Generate newmsg.txt.")
 newmsg()
+print ("Mail directory rebuild.")
 mail_rebuild()
