@@ -21,7 +21,7 @@ def get_local_msg_list(echo):
         return local_msg_list
 
 def get_bundle(msgids):
-    print ("Fetch %su/m%s\n" % (ii.node, msgids))
+    print ("Fetch %su/m/%s\n" % (ii.node, msgids))
     bundle = []
     r = urllib.request.Request(ii.node + "u/m/" + msgids)
     with urllib.request.urlopen(r) as f:
