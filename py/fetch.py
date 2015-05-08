@@ -12,10 +12,10 @@ def get_msg_list(echo):
     return msg_list
 
 def get_local_msg_list(echo):
-    if not os.path.exists("../.echo/" + echo):
+    if not os.path.exists("../base/echo/" + echo):
         return []
     else:
-        f = open("../.echo/" + echo, "r")
+        f = open("../base/echo/" + echo, "r")
         local_msg_list = f.read().split("\n")
         f.close()
         return local_msg_list
@@ -34,8 +34,8 @@ def debundle(echo, bundle):
             m = msg.split(":")
             msgid = m[0]
             if len(msgid) == 20 and m[1]:
-                open("../.msg/" + msgid, "w").write(base64.b64decode(m[1]).decode("utf-8"))
-                open("../.echo/" + echo, "a").write(msgid + "\n")
+                open("../base/msg/" + msgid, "w").write(base64.b64decode(m[1]).decode("utf-8"))
+                open("../base/echo/" + echo, "a").write(msgid + "\n")
                 open("../.newmsg", "a").write(msgid + "\n")
 
 def fetch_mail():
@@ -48,16 +48,16 @@ def fetch_mail():
 
 def mail_rebuild():
     for echo in ii.echoes:
-        if not os.path.exists("../" + echo):
-            os.makedirs("../" + echo)
-        msgs = open("../.echo/" + echo, "r").read().split("\n")
-        f = open("../" + echo + "/0000.txt", "w")
+        if not os.path.exists("../mail/" + echo):
+            os.makedirs("../mail/" + echo)
+        msgs = open("../base/echo/" + echo, "r").read().split("\n")
+        f = open("../mail/" + echo + "/0000.txt", "w")
         for i, m in enumerate(msgs, 1):
             if m:
                 n = str(i).zfill(4)
-                msg = open("../.msg/" + m, "r").read().split("\n")
+                msg = open("../base/msg/" + m, "r").read().split("\n")
                 buf = m + "\nОт:   " + msg[3] + " [" + msg[4] + "] " + time.strftime("%Y.%m.%d %H:%M", time.gmtime(int(msg[2]))) + " GMT\nКому: " + msg[5] + "\nТема: " + msg[6] + "\n\n" + "\n".join(msg[8:])
-                open("../" + echo +"/" + n + ".txt", "w").write(buf)
+                open("../mail/" + echo +"/" + n + ".txt", "w").write(buf)
                 f.write("== " + n + " ==================== " + buf + "\n\n\n")
         f.close()
 
@@ -69,7 +69,7 @@ def newmsg():
         f = open("../newmsg.txt", "w")
         for m in msgs:
             if m:
-                msg = open("../.msg/" + m, "r").read().split("\n")
+                msg = open("../base/msg/" + m, "r").read().split("\n")
                 buf = m + "\nОт:   " + msg[3] + " [" + msg[4] + "] " + time.strftime("%Y.%m.%d %H:%M", time.gmtime(int(msg[2]))) + " GMT\nКому: " + msg[5] + "\nТема: " + msg[6] + "\n\n" + "\n".join(msg[8:])
                 f.write("== " + msg[1] + " ==================== " + buf + "\n\n\n")
         f.close()

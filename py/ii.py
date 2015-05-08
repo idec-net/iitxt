@@ -30,12 +30,16 @@ def load_config():
                     echoes.append(param[1])
 
 def check_base():
-    if not os.path.exists("../.msg"):
-        os.makedirs("../.msg")
-    if not os.path.exists("../.echo"):
-        os.makedirs("../.echo")
-    if not os.path.exists("../.out"):
-        os.makedirs("../.out")
+    if not os.path.exists("../base"):
+        os.makedirs("../base")
+    if not os.path.exists("../mail"):
+        os.makedirs("../mail")
+    if not os.path.exists("../base/msg"):
+        os.makedirs("../base/msg")
+    if not os.path.exists("../base/echo"):
+        os.makedirs("../base/echo")
+    if not os.path.exists("../base/out"):
+        os.makedirs("../base/out")
 
 def separate(l, step=20):
     for x in range(0, len(l), step):
