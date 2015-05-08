@@ -41,10 +41,13 @@ def debundle(echo, bundle):
 def fetch_mail():
     for echo in ii.echoes:
         remote_msg_list = get_msg_list(echo)
-        local_msg_list = get_local_msg_list(echo)
-        msg_list = [x for x in remote_msg_list if x not in local_msg_list]
-        for get_list in ii.separate(msg_list):
-            debundle(echo, get_bundle("/".join(get_list)))
+        if len(remote_msg_list) > 1:
+            local_msg_list = get_local_msg_list(echo)
+            msg_list = [x for x in remote_msg_list if x not in local_msg_list]
+            for get_list in ii.separate(msg_list):
+                debundle(echo, get_bundle("/".join(get_list)))
+        else:
+            open("../base/echo/" + echo, "a").close()
 
 def mail_rebuild():
     for echo in ii.echoes:
