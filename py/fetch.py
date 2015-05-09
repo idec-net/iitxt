@@ -67,6 +67,7 @@ def mail_rebuild():
 def mail_add():
     if os.path.exists("../.newmsg"):
         msgs = open("../.newmsg", "r").read().split("\n")
+        f = open("../mail/" + echo + "/0000.txt", "a")
         for msgn in msgs:
             if msgn:
                 msg = open("../base/msg/%s" % msgn, "r").read().split("\n")
@@ -76,6 +77,8 @@ def mail_add():
                 n = str(int(n.pop().replace(".txt", "")) + 1).zfill(4) + ".txt"
                 buf = msgn + "\nОт:   " + msg[3] + " [" + msg[4] + "] " + time.strftime("%Y.%m.%d %H:%M", time.gmtime(int(msg[2]))) + " GMT\nКому: " + msg[5] + "\nТема: " + msg[6] + "\n\n" + "\n".join(msg[8:])
                 open("../mail/%s/%s" % (echo, n), "w").write(buf)
+                f.write("== " + n + " ==================== " + buf + "\n\n\n")
+        f.close()
 
 def newmsg():
     if os.path.exists("../newmsg.txt"):
