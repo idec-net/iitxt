@@ -2,6 +2,7 @@ import os
 
 node = ""
 auth = ""
+editor = "nano"
 echoes = []
 rebuild = "1"
 
@@ -14,8 +15,15 @@ def get_echo_list():
             echo.append(line.split(":")[0])
     return echo
 
+def get_local_mail_list(echo):
+	if not os.path.exists("../mail/" + echo):
+		return []
+	else:
+		msglist = [msg for msg in os.listdir("../mail/" + echo) if (msg.endswith(".txt") and msg!="0000.txt")]
+		return sorted(msglist)
+
 def load_config():
-    global node, auth, echoes, rebuild
+    global node, auth, echoes, rebuild, editor
     f = open ("../config.cfg", "r")
     lines = f.read().split("\n")
     f.close()
@@ -31,6 +39,8 @@ def load_config():
                     echoes.append(param[1])
                 if param[0] == "rebuild":
                     rebuild = param[1]
+                if param[0] == "editor":
+                    editor = param[1]
 
 def check_base():
     if not os.path.exists("../base"):
