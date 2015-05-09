@@ -3,6 +3,7 @@ import os
 node = ""
 auth = ""
 echoes = []
+rebuild = "1"
 
 def get_echo_list():
     echo = []
@@ -14,7 +15,7 @@ def get_echo_list():
     return echo
 
 def load_config():
-    global node, auth, echoes
+    global node, auth, echoes, rebuild
     f = open ("../config.cfg", "r")
     lines = f.read().split("\n")
     f.close()
@@ -28,6 +29,8 @@ def load_config():
                     auth = param[1]
                 if param[0] == "echo":
                     echoes.append(param[1])
+                if param[0] == "rebuild":
+                    rebuild = param[1]
 
 def check_base():
     if not os.path.exists("../base"):

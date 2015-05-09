@@ -64,11 +64,24 @@ def mail_rebuild():
                 f.write("== " + n + " ==================== " + buf + "\n\n\n")
         f.close()
 
+def mail_add():
+    if os.path.exists("../.newmsg"):
+        msgs = open("../.newmsg", "r").read().split("\n")
+        for msgn in msgs:
+            if msgn:
+                msg = open("../base/msg/%s" % msgn, "r").read().split("\n")
+                echo = msg[1]
+                n = os.listdir("../mail/%s" % echo)
+                n.sort()
+                n = str(int(n.pop().replace(".txt", "")) + 1).zfill(4) + ".txt"
+                buf = msgn + "\nОт:   " + msg[3] + " [" + msg[4] + "] " + time.strftime("%Y.%m.%d %H:%M", time.gmtime(int(msg[2]))) + " GMT\nКому: " + msg[5] + "\nТема: " + msg[6] + "\n\n" + "\n".join(msg[8:])
+                open("../mail/%s/%s" % (echo, n), "w").write(buf)
+
 def newmsg():
     if os.path.exists("../newmsg.txt"):
         os.remove("../newmsg.txt")
     if os.path.exists("../.newmsg"):
-        msgs = open("../.newmsg").read().split("\n")
+        msgs = open("../.newmsg", "r").read().split("\n")
         f = open("../newmsg.txt", "w")
         for m in msgs:
             if m:
@@ -80,9 +93,16 @@ def newmsg():
         
 ii.check_base()
 ii.load_config()
+
 print ("Fetching start.")
 fetch_mail()
+
+if ii.rebuild == "0":
+    print ("Add new messages to mail directory.")
+    mail_add()
+else:
+    print ("Mail directory rebuild.")
+    mail_rebuild()
+
 print ("Generate newmsg.txt.")
 newmsg()
-print ("Mail directory rebuild.")
-mail_rebuild()
