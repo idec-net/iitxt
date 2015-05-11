@@ -1,4 +1,4 @@
-import urllib.request, base64, os, time
+import urllib.request, base64, codecs, os, time
 import ii
 
 def get_msg_list(echo):
@@ -15,9 +15,7 @@ def get_local_msg_list(echo):
     if not os.path.exists("../base/echo/" + echo):
         return []
     else:
-        f = open("../base/echo/" + echo, "r")
-        local_msg_list = f.read().split("\n")
-        f.close()
+        local_msg_list = codecs.open("../base/echo/" + echo, "r", "utf-8").read().split("\n")
         return local_msg_list
 
 def get_bundle(msgids):
@@ -34,9 +32,9 @@ def debundle(echo, bundle):
             m = msg.split(":")
             msgid = m[0]
             if len(msgid) == 20 and m[1]:
-                open("../base/msg/" + msgid, "w").write(base64.b64decode(m[1]).decode("utf-8"))
-                open("../base/echo/" + echo, "a").write(msgid + "\n")
-                open("../.newmsg", "a").write(msgid + "\n")
+                codecs.open("../base/msg/" + msgid, "w", "utf-8").write(base64.b64decode(m[1]).decode("utf-8"))
+                codecs.open("../base/echo/" + echo, "a", "utf-8").write(msgid + "\n")
+                codecs.open("../.newmsg", "a", "utf-8").write(msgid + "\n")
 
 def fetch_mail():
     for echo in ii.echoes:
@@ -47,36 +45,38 @@ def fetch_mail():
             for get_list in ii.separate(msg_list):
                 debundle(echo, get_bundle("/".join(get_list)))
         else:
-            open("../base/echo/" + echo, "a").close()
+            codecs.open("../base/echo/" + echo, "a", "utf-8").close()
 
 def mail_rebuild():
     for echo in ii.echoes:
         if not os.path.exists("../mail/" + echo):
             os.makedirs("../mail/" + echo)
-        msgs = open("../base/echo/" + echo, "r").read().split("\n")
-        f = open("../mail/" + echo + "/0000.txt", "w")
+        msgs = codecs.open("../base/echo/" + echo, "r", "utf-8").read().split("\n")
+        f = codecs.open("../mail/" + echo + "/0000.txt", "w", "utf-8")
         for i, m in enumerate(msgs, 1):
             if m:
                 n = str(i).zfill(4)
-                msg = open("../base/msg/" + m, "r").read().split("\n")
+                msg = codecs.open("../base/msg/" + m, "r", "utf-8").read().split("\n")
                 buf = m + "\nОт:   " + msg[3] + " [" + msg[4] + "] " + time.strftime("%Y.%m.%d %H:%M", time.gmtime(int(msg[2]))) + " GMT\nКому: " + msg[5] + "\nТема: " + msg[6] + "\n\n" + "\n".join(msg[8:])
-                open("../mail/" + echo +"/" + n + ".txt", "w").write(buf)
+                codecs.open("../mail/" + echo +"/" + n + ".txt", "w", "utf-8").write(buf)
                 f.write("== " + n + " ==================== " + buf + "\n\n\n")
         f.close()
 
 def mail_add():
     if os.path.exists("../.newmsg"):
-        msgs = open("../.newmsg", "r").read().split("\n")
+        msgs = codecs.open("../.newmsg", "r", "utf-8").read().split("\n")
         for msgn in msgs:
             if msgn:
-                msg = open("../base/msg/%s" % msgn, "r").read().split("\n")
+                msg = codecs.open("../base/msg/%s" % msgn, "r", "utf-8").read().split("\n")
                 echo = msg[1]
-                f = open("../mail/" + echo + "/0000.txt", "a")
+                if not os.path.exists("../mail/" + echo):
+                    os.makedirs("../mail/" + echo)
+                f = codecs.open("../mail/" + echo + "/0000.txt", "a", "utf-8")
                 n = os.listdir("../mail/%s" % echo)
                 n.sort()
                 n = str(int(n.pop().replace(".txt", "")) + 1).zfill(4) + ".txt"
                 buf = msgn + "\nОт:   " + msg[3] + " [" + msg[4] + "] " + time.strftime("%Y.%m.%d %H:%M", time.gmtime(int(msg[2]))) + " GMT\nКому: " + msg[5] + "\nТема: " + msg[6] + "\n\n" + "\n".join(msg[8:])
-                open("../mail/%s/%s" % (echo, n), "w").write(buf)
+                codecs.open("../mail/%s/%s" % (echo, n), "w", "utf-8").write(buf)
                 f.write("== " + n + " ==================== " + buf + "\n\n\n")
                 f.close()
 
@@ -84,11 +84,11 @@ def newmsg():
     if os.path.exists("../newmsg.txt"):
         os.remove("../newmsg.txt")
     if os.path.exists("../.newmsg"):
-        msgs = open("../.newmsg", "r").read().split("\n")
-        f = open("../newmsg.txt", "w")
+        msgs = codecs.open("../.newmsg", "r", "utf-8").read().split("\n")
+        f = codecs.open("../newmsg.txt", "w", "utf-8")
         for m in msgs:
             if m:
-                msg = open("../base/msg/" + m, "r").read().split("\n")
+                msg = codecs.open("../base/msg/" + m, "r", "utf-8").read().split("\n")
                 buf = m + "\nОт:   " + msg[3] + " [" + msg[4] + "] " + time.strftime("%Y.%m.%d %H:%M", time.gmtime(int(msg[2]))) + " GMT\nКому: " + msg[5] + "\nТема: " + msg[6] + "\n\n" + "\n".join(msg[8:])
                 f.write("== " + msg[1] + " ==================== " + buf + "\n\n\n")
         f.close()

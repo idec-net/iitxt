@@ -1,4 +1,4 @@
-import os
+import codecs, os
 
 node = ""
 auth = ""
@@ -24,7 +24,7 @@ def get_local_mail_list(echo):
 
 def load_config():
     global node, auth, echoes, rebuild, editor
-    f = open ("../config.cfg", "r")
+    f = codecs.open("../config.cfg", "r", "utf-8")
     lines = f.read().split("\n")
     f.close()
     for line in lines:
