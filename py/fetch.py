@@ -71,6 +71,9 @@ def mail_add():
             if msgn:
                 msg = open("../base/msg/%s" % msgn, "r").read().split("\n")
                 echo = msg[1]
+                if (not os.path.exists("../mail/"+echo)):
+                    os.makedirs("../mail/"+echo)
+
                 f = open("../mail/" + echo + "/0000.txt", "a")
                 n = os.listdir("../mail/%s" % echo)
                 n.sort()
