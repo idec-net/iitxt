@@ -1,4 +1,4 @@
-import os, shutil
+import codecs, os, shutil
 
 node = ""
 auth = ""
@@ -27,7 +27,7 @@ def load_config():
     if (not os.path.exists("../config.cfg")):
         print("config.cfg does not exist; copying default...")
         shutil.copyfile("../config.default.cfg", "../config.cfg")
-    f = open ("../config.cfg", "r")
+    f = codecs.open("../config.cfg", "r", "utf-8")
     lines = f.read().split("\n")
     f.close()
     for line in lines:
