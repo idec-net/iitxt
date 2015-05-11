@@ -1,4 +1,4 @@
-import os
+import os, shutil
 
 node = ""
 auth = ""
@@ -24,6 +24,9 @@ def get_local_mail_list(echo):
 
 def load_config():
     global node, auth, echoes, rebuild, editor
+    if (not os.path.exists("../config.cfg")):
+        print("config.cfg does not exist; copying default...")
+        shutil.copyfile("../config.default.cfg", "../config.cfg")
     f = open ("../config.cfg", "r")
     lines = f.read().split("\n")
     f.close()
